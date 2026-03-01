@@ -18,6 +18,7 @@ function Dropzone({
   onFilesAdded: (files: File[]) => void;
   files: File[];
   onRemove: (idx: number) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   t?: any;
 }) {
   const [isDragActive, setIsDragActive] = useState(false);
@@ -182,7 +183,7 @@ export default function Home() {
       active = false;
       clearTimeout(timer);
     };
-  }, [provider, apiKey, baseUrl]);
+  }, [provider, apiKey, baseUrl, model]);
 
   const extractDocuments = async (files: File[], type: 'agreement' | 'invoice'): Promise<DocumentData> => {
     const formData = new FormData();
@@ -226,8 +227,8 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error || 'Failed to compare documents');
 
       setResults(data.results);
-    } catch (err: any) {
-      setErrorMsg(err.message);
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : String(err));
     } finally {
       setIsProcessing(false);
     }

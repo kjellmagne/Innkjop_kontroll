@@ -84,8 +84,8 @@ export async function POST(req: Request) {
         }
 
         return NextResponse.json({ results });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Comparison error:", error);
-        return NextResponse.json({ error: error.message || 'Failed to compare data' }, { status: 500 });
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown comparison error" }, { status: 500 });
     }
 }

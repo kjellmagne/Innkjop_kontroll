@@ -14,8 +14,8 @@ export async function POST(req: Request) {
             const data = await res.json();
             // Filter only models that support generateContent (like gemini series)
             models = data.models
-                .filter((m: any) => m.supportedGenerationMethods?.includes('generateContent'))
-                .map((m: any) => m.name.replace('models/', ''));
+                .filter((m: { supportedGenerationMethods?: string[] }) => m.supportedGenerationMethods?.includes('generateContent'))
+                .map((m: { name: string }) => m.name.replace('models/', ''));
         }
         else if (provider === 'openai') {
             const endpoint = baseUrl || 'https://api.openai.com/v1';
@@ -31,13 +31,13 @@ export async function POST(req: Request) {
                 console.log("OpenAI models raw response:", JSON.stringify(data).slice(0, 200));
                 // Try to filter for text/chat models
                 models = data.data
-                    .map((m: any) => m.id)
+                    .map((m: { id: string }) => m.id)
                     // Filter out embeddings/audio/whisper if standard openai, but if it's a proxy they might not have these prefixes.
                     .filter((id: string) => !id.includes('embedding') && !id.includes('whisper') && !id.includes('tts') && !id.includes('dall-e'))
                     .sort();
                 console.log("Filtered OpenAI models:", models);
-            } catch (err: any) {
-                console.warn(`OpenAI /models fetch failed for ${endpoint}:`, err.message);
+            } catch (err: unknown) {
+                console.warn("Failed to fetch custom OpenAI models:", err);
                 models = [];
             }
         }
@@ -52,17 +52,17 @@ export async function POST(req: Request) {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
                 console.log("vLLM models raw response:", JSON.stringify(data).slice(0, 200));
-                models = data.data.map((m: any) => m.id);
+                models = data.data.map((m: { id: string }) => m.id);
                 console.log("Filtered vLLM models:", models);
-            } catch (err: any) {
-                console.warn(`vLLM /models fetch failed for ${baseUrl}:`, err.message);
+            } catch (err: unknown) {
+                console.warn("Failed to fetch vLLM models:", err);
                 models = [];
             }
         }
 
         return NextResponse.json({ models });
-    } catch (error: any) {
-        console.error("Models fetch error:", error);
-        return NextResponse.json({ error: error.message || 'Failed to fetch models', models: [] }, { status: 500 });
+    } catch (error: unknown) {
+        console.error("Fetch models error:", error);
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown fetch models error", models: [] }, { status: 500 });
     }
 }

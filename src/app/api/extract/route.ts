@@ -4,6 +4,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createOpenAI } from '@ai-sdk/openai';
 import { z } from 'zod';
 import * as pdfParser from 'pdf-parse';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const pdf = (pdfParser as any).default || pdfParser;
 
 export const maxDuration = 60; // Allow more time for AI parsing
@@ -79,8 +80,8 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ data: object });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Extraction error:", error);
-        return NextResponse.json({ error: error.message || 'Failed to extract data' }, { status: 500 });
+        return NextResponse.json({ error: error instanceof Error ? error.message : "Unknown extraction error" }, { status: 500 });
     }
 }
