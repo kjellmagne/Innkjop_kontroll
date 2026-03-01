@@ -9,6 +9,7 @@ export const dict = {
         subtitle: "Automatisert KI-fakturakontroll",
         settingsBtn: "KI-innstillinger",
         languageBtn: "English",
+        developedBy: "Utviklet av IKT og digitalisering",
         heroTitle: "Sjekk fakturaer mot avtaler på sekunder",
         heroSub: "Last opp dokumentene dine under, så vil vår KI trekke ut og sammenligne linjeelementene.",
         agreementBox: {
@@ -72,6 +73,7 @@ export const dict = {
         subtitle: "Automated AI invoice verification",
         settingsBtn: "AI Settings",
         languageBtn: "Norsk",
+        developedBy: "Developed by ICT and Digitalisation",
         heroTitle: "Verify invoices against agreements in seconds",
         heroSub: "Upload your documents below and our AI will extract and compare the line items.",
         agreementBox: {

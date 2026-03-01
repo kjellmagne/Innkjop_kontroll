@@ -488,6 +488,10 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      <footer className={styles.footer}>
+        {t.developedBy}
+      </footer>
     </div>
   );
 }
